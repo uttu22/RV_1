@@ -1,0 +1,224 @@
+GIT FUNCTIONS - COMPLETE GUIDE
+================================
+
+1. INITIALIZE A REPOSITORY
+--------------------------
+Command: git init
+Explanation: Creates a new Git repository in your current directory. This creates 
+a .git folder that tracks all changes to your project. Use this when starting a 
+new project locally.
+Usage: git init
+
+
+2. CLONE A REPOSITORY
+---------------------
+Command: git clone <repository-url>
+Explanation: Downloads an existing repository from GitHub to your local machine. 
+This copies the entire project history and all branches. Use this to get a project 
+that already exists on GitHub.
+Usage: git clone https://github.com/yourusername/repo-name.git
+
+
+3. STAGE CHANGES
+----------------
+Command: git add <filename> or git add .
+Explanation: Prepares files for commit by moving them to the "staging area". 
+This tells Git which changes you want to include in your next commit. You can 
+stage specific files or all changes at once.
+Usage: 
+  git add filename.txt     (stage a specific file)
+  git add .                (stage all changes)
+
+
+4. COMMIT CHANGES
+-----------------
+Command: git commit -m "Your message"
+Explanation: Saves staged changes with a description. A commit is a snapshot of 
+your project at a specific point in time. Write clear, descriptive messages that 
+explain what you changed (e.g., "Add login feature" or "Fix bug in parser").
+Usage: git commit -m "Add user authentication"
+
+
+5. PUSH TO GITHUB
+-----------------
+Command: git push origin main
+Explanation: Uploads your local commits to GitHub. "origin" refers to your remote 
+repository on GitHub, and "main" is the branch you're pushing to. This makes your 
+changes available to others and backs up your work.
+Usage: git push origin main
+
+
+6. PULL FROM GITHUB
+-------------------
+Command: git pull origin main
+Explanation: Downloads and merges changes from GitHub into your local branch. Use 
+this to sync with team members' work or your own updates made on another machine. 
+It combines "git fetch" and "git merge" into one command.
+Usage: git pull origin main
+
+
+7. CHECK STATUS
+---------------
+Command: git status
+Explanation: Shows which files are modified, staged, or untracked. This is one of 
+the most useful commands to understand what's changed in your project and what Git 
+is tracking. Use this frequently before committing.
+Usage: git status
+
+
+ADDITIONAL USEFUL COMMANDS
+===========================
+
+8. VIEW COMMIT HISTORY
+----------------------
+Command: git log
+Explanation: Displays all commits in your repository with timestamps and messages. 
+Helps you understand the project's history and who made what changes.
+Usage: git log
+
+
+9. CREATE/LIST BRANCHES
+-----------------------
+Command: git branch or git branch <branch-name>
+Explanation: Lists all branches (when used alone) or creates a new branch (with name). 
+Branches allow you to work on different features without affecting the main code.
+Usage: 
+  git branch              (list all branches)
+  git branch new-feature  (create a new branch)
+
+
+10. SWITCH TO A BRANCH
+----------------------
+Command: git checkout -b <branch-name>
+Explanation: Creates a new branch AND switches to it in one command. The -b flag 
+means "create and checkout". Use this when starting work on a new feature.
+Usage: git checkout -b feature/login-page
+
+
+11. MERGE BRANCHES
+------------------
+Command: git merge <branch-name>
+Explanation: Combines changes from one branch into your current branch. Use this 
+when you've finished working on a feature and want to merge it back to main.
+Usage: git merge feature/login-page
+
+
+12. VIEW ALL BRANCHES (LOCAL AND REMOTE)
+----------------------------------------
+Command: git branch -a
+Explanation: Shows all branches - both local branches (on your machine) and remote 
+branches (on GitHub). This helps you see the complete branch structure and identify 
+which branches exist. Remote branches are prefixed with "origin/".
+Usage: git branch -a
+
+
+13. SWITCH TO EXISTING BRANCH
+------------------------------
+Command: git checkout <branch-name>
+Explanation: Switches from your current branch to another branch. This updates your 
+working directory to match the selected branch. Use this when you want to work on 
+a different branch or switch back to main.
+Usage: git checkout main
+
+
+14. DELETE A BRANCH LOCALLY
+---------------------------
+Command: git branch -d <branch-name>
+Explanation: Deletes a branch from your local machine. Use -d to safely delete 
+(only works if merged), or -D to force delete. This is useful when you've finished 
+with a feature branch and no longer need it.
+Usage: 
+  git branch -d feature/login-page     (safe delete)
+  git branch -D feature/login-page     (force delete)
+
+
+15. DELETE A BRANCH ON GITHUB
+-----------------------------
+Command: git push origin --delete <branch-name>
+Explanation: Removes a branch from your remote GitHub repository. Use this after 
+deleting the branch locally to keep GitHub in sync. This prevents clutter in your 
+repository.
+Usage: git push origin --delete master
+
+
+16. VIEW ALL COMMITS ON ALL BRANCHES
+------------------------------------
+Command: git log --all --oneline
+Explanation: Displays all commits from all branches in a compact one-line format. 
+This is useful for troubleshooting when commits seem to be missing - they might 
+exist on a different branch. The --all flag shows everything.
+Usage: git log --all --oneline
+
+
+17. COPY COMMITS FROM ONE BRANCH TO ANOTHER
+--------------------------------------------
+Command: git cherry-pick <commit-hash>
+Explanation: Takes a specific commit from one branch and applies it to your current 
+branch. Useful when you need only certain commits from another branch without 
+merging everything. Get the commit hash from git log.
+Usage: git cherry-pick abc123def
+
+
+TROUBLESHOOTING: TWO BRANCHES (MAIN AND MASTER)
+================================================
+
+Problem: You have both "main" and "master" branches, or can't see your first commit.
+
+Solution: Keep only main and merge everything into it:
+
+Step 1: View all commits and branches
+  git log --all --oneline
+  git branch -a
+
+Step 2: Switch to main branch
+  git checkout main
+
+Step 3: Merge master into main (if commits are on master)
+  git merge master
+
+Step 4: Delete the master branch locally
+  git branch -d master
+
+Step 5: Delete master from GitHub
+  git push origin --delete master
+
+Step 6: Push main to GitHub
+  git push origin main
+
+Step 7: Verify everything is correct
+  git log
+  git branch -a
+
+
+QUICK START WORKFLOW
+====================
+
+Step 1: Create or navigate to your project folder
+  cd your-project
+
+Step 2: Initialize Git
+  git init
+
+Step 3: Connect to GitHub (after creating a repo on GitHub)
+  git remote add origin https://github.com/yourusername/repo-name.git
+
+Step 4: Make changes to files
+  (edit your files using your editor)
+
+Step 5: Stage and commit
+  git add .
+  git commit -m "Initial commit"
+
+Step 6: Push to GitHub
+  git push -u origin main
+
+
+IMPORTANT TIP
+=============
+Create a .gitignore file in your project to exclude files from being tracked:
+- node_modules/  (for Node.js projects)
+- .env           (for environment variables)
+- __pycache__/   (for Python projects)
+- .DS_Store      (for macOS)
+
+This prevents unwanted files from being uploaded to GitHub.
