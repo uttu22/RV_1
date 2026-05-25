@@ -1,44 +1,96 @@
-typedef enum logic [2:0] {
-      ADD_SUB = 3'b000,
-      SLL     = 3'b001,
-      SLT     = 3'b010,
-      SLTU    = 3'b011,
-      XOR     = 3'b100,
-      SR      = 3'b101,
-      OR      = 3'b110,
-      AND     = 3'b111
-  } arith_op;
 
-/*
-operations --
-  add , sub 
-  boolean = xor , or , and 
-  shift = sll , srl , sra
-*/
+typedef enum logic[3:0] {
+    ADD = 4'b0000,
+    SUB = 4'b0001,
+    SLL = 4'b0010,
+    SLT = 4'b0100,
+    SLTU = 4'b0110,
+    XOR = 4'b1000,   
+    SRL = 4'b1010,
+    SRA = 4'b1011,
+    OR  = 4'b1100,
+    AND = 4'b1110
+} FUN3 ;
 
-module alu #(parameter width = 32)
-( input  logic [width-1:0] in_a,  
-  input  logic [width-1:0] in_b,
-  input  arith_op          func3, // Used the enum type here
-  input  logic             func7, // Explicitly declared as logic
-  output logic [width-1:0] out_z );
 
-  always_comb begin 
-      out_z = 'b0 ; 
-      case (func3) 
-        XOR    : out_z = in_a ^ in_b ;
-        // Added $signed() for arithmetic shift. Corrected operand order to match SLL
-        SR     : out_z = (func7) ? ($signed(in_a) >>> in_b) : (in_a >> in_b) ;  
-        OR     : out_z = in_a | in_b;
-        AND    : out_z = in_a & in_b;        
-        // Simplified the condition
-        ADD_SUB: out_z = (func7) ? (in_a + in_b) : (in_a - in_b) ; 
-        SLL    : out_z = in_a << in_b ;
-        // Added $signed() cast for signed comparison
-        SLT    : out_z = ($signed(in_a) < $signed(in_b));
-        // Removed unnecessary $unsigned since signals are already unsigned
-        SLTU   : out_z = (in_a < in_b); 
-      endcase
-  end
 
+module alu #(parameter WIDTH = 32)( 
+  input logic FUN7_5,
+  input logic[2:0] FUN3,
+  input logic[WIDTH-1:0] A,B ,
+  output logic C,Z,V,S,
+  output logic[WIDTH-1:0] OUT
+);
+
+
+logic [WIDTH : 0] sub33;
+assign sub33 = {1'b0,A} - {1'b0,B} ; 
+logic C0 = sub33[WIDTH];
+logic S0 = sub33[WIDTH-1];
+logic V0 = ((A[WIDTH-1]!=B[WIDTH-1]) && (A[WIDTH-1]!=sub33[WIDTH-1]));
+
+
+
+always_comb begin
+  OUT = {(WIDTH){1'b0}} ;
+  V = 1'b0;
+  C = 1'b0;
+  case({FUN3,FUN7_5})
+    //-------
+    ADD:  begin 
+      {C,OUT} = {1'b0,A} + {1'b0,B} ; 
+      if((A[WIDTH-1]==B[WIDTH-1]) && (A[WIDTH-1]!= OUT[WIDTH-1])) V=1'b1;
+      else V=1'b0;
+    end
+    //------
+    SUB :  begin
+      {C,OUT} = sub33 ;
+      V = V0 ;
+    end
+    //-----
+    SLT :  begin
+      OUT = (V0^S0)? 'b1 : 'b0;
+    end
+    //-----
+    SLTU :  begin
+      OUT = (C)? 'b0 : 'b1;
+    end
+    //-----
+    AND : begin
+      OUT=A&B;
+    end
+    //-----
+    OR  : begin
+      OUT=A|B; 
+    end
+    //-----
+    XOR :  begin
+      OUT=A^B; 
+    end
+    //-----
+    SLL : begin
+      OUT = A<<B[4:0]; 
+    end
+    //-----
+    SRL : begin
+      OUT = A>>B[4:0]; 
+    end
+    //-----
+    SRA : begin
+      OUT = ($signed(A)>>>B[4:0]); 
+    end
+    //------
+    default: begin
+        OUT = {(WIDTH){1'b0}} ;
+        V = 1'b0;
+        C = 1'b0;
+    end
+  endcase
+
+end
+
+
+assign S = OUT[WIDTH-1];
+assign Z = ~|(A[WIDTH-1:0]^B[WIDTH-1:0]);
+ 
 endmodule

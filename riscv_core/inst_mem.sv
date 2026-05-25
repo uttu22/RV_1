@@ -8,7 +8,7 @@ module inst_mem #(
     output logic[DATA_WIDTH -1 : 0] data_out  
  )
 
-logic [DATA_WIDTH-1:0]ROM [0:(1<<ADDRESS_WIDTH-1)];
+logic [DATA_WIDTH-1:0] ROM [0:(1<<ADDRESS_WIDTH)-1];
 
 always_ff @(posedge clk ) begin : inst_memory
     data_out <= ROM[inst_add];
