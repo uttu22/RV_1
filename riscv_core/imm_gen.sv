@@ -1,10 +1,13 @@
-module imm_logic  
-import rv32i_pkg::*; 
+module imm_gen  #(
+    parameter WIDTH = 32
+)
 (
-    input  logic [31:0] inst,
-    output logic [31:0] imm 
+    input  logic [WIDTH-1:0] inst, 
+    output logic [WIDTH-1:0] imm
 );
-    logic[6:0] opcode ;
+import rv32i_pkg::*; 
+
+    logic [6:0] opcode;
     assign opcode = inst[6:0];
     
     always_comb begin : imm_logic

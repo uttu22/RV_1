@@ -1,5 +1,8 @@
 package rv32i_pkg;
 
+    localparam  NOP = 32'h000000013;
+    localparam  WIDTH = 32;
+
     typedef enum logic [6:0] {
         OP_U_LUI    = 7'b0110111,
         OP_U_AUIPC  = 7'b0010111,
@@ -55,18 +58,62 @@ package rv32i_pkg;
         F3_SW = 3'b010 
     } s_store_fun3;
    
-    typedef enum logic[2:0] {
-        F3_ADD_SUB = 'b000,
-        F3_SLL = 'b001,
-        F3_SLT = 'b010,
-        F3_SLTU = 'b011,
-        F3_XOR = 'b100,
-        F3_SR = 'b101,
-        F3_OR =  'b110,
-        F3_AND = 'b111
-    } r_arith_fun3;
+
+
+    typedef enum logic[3:0] {
+        ADD = 4'b0000,
+        SUB = 4'b0001,
+        SLL = 4'b0010,
+        SLT = 4'b0100,
+        SLTU = 4'b0110,
+        XOR = 4'b1000,   
+        SRL = 4'b1010,
+        SRA = 4'b1011,
+        OR  = 4'b1100,
+        AND = 4'b1110
+    } ALU_FUN3_FUN7_5 ;
+
+
+    typedef struct packed {
+        logic [WIDTH-1:0] pc ;
+        logic [WIDTH-1:0] pc_pre_fetch ;
+    }if_t;
+
+    typedef struct packed {
+        logic [WIDTH-1:0] inst;
+        logic [WIDTH-1:0] pc;
+    }if_id_t;
+
+    typedef struct packed {
+        logic [WIDTH-1:0] src_a;
+        logic [WIDTH-1:0] src_b;
+        logic [WIDTH-1:0] address_data;
+        logic [4:0] rd_add;
+        logic [4:0] rs1_add;
+        logic [4:0] rs2_add;
+        logic [3:0] byte_mask;
+        logic [2:0] fun3;
+        logic       fun7_5;
+        logic       branch_taken;
+        logic       load_en;
+        logic       store_en;
+    }id_ex_t;
+
+    typedef struct packed {
+        logic [WIDTH-1:0] ex_data;
+        logic [4:0] rd_add;
+        logic [2:0] fun3;
+        logic       load_en;
+    }ex_mem_t;
+
+    typedef struct packed {
+        logic [WIDTH-1:0] mem_data;
+        logic [4:0] rd_add;
+    }mem_wb_t;
 
 
 
 
-endpackage 
+
+
+endpackage  : rv32i_pkg

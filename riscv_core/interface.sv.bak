@@ -1,0 +1,131 @@
+interface core_if;
+    
+    logic clk,
+    logic reset,
+
+    
+
+
+
+    modport control_pins (
+    
+        
+        // data_path --> control_unit
+        input logic [WIDTH-1:0] id_inst,
+
+        //control --> data_path
+        output logic id_jump_en,
+        output logic id_b_inst_en,
+        output logic id_imm_en,
+        output logic id_jal_en,
+        output logic id_load_en,
+        output logic id_store_en,
+        output logic id_auipc_en
+        output logic [4:0] id_rs1_add,
+        output logic [4:0] id_rs2_add,
+        output logic [4:0] id_rd_add,
+        output logic [2:0] id_fun3,
+        output logic  id_fun7_5,
+
+    );
+
+    modport data_pins (
+        input logic clk,
+        input logic _reset,
+
+        //from hazard logic 
+        input logic stall_if,
+        input logic stall_id,
+        input logic stall_ex,
+        input logic nop_id,
+        input logic nop_ex,
+
+        //from control logic 
+        input logic id_jump_en,
+        input logic id_b_inst_en,
+        input logic id_imm_en,
+        input logic id_jal_en,
+        input logic id_load_en,
+        input logic id_store_en,
+        input logic id_auipc_en,
+        input logic [4:0] id_rs1_add,
+        input logic [4:0] id_rs2_add,
+        input logic [4:0] id_rd_add,
+        input logic [2:0] id_fun3,
+        input logic id_fun7_5,
+
+        //from forward block 
+        input logic [1:0] id_rs1_mux_sel,
+        input logic [1:0] id_rs2_mux_sel,
+        input logic [2:0] ex_alu_a_mux_sel,
+        input logic [2:0] ex_alu_b_mux_sel,
+
+
+        // to other blocks 
+        output logic [WIDTH-1:0] id_inst,    
+
+        // data_path --> hazard_unit
+        output logic [4:0] ex_rs1_add,
+        output logic [4:0] ex_rs2_add,
+        output logic [4:0] ex_rd_add,
+        output logic [4:0] mem_rd_add,
+        output logic [4:0] wb_rd_add
+        output logic mem_load_en ;
+        output logic ex_branch_taken;
+
+    
+        //no use actually
+        output logic [3:0] ex_alu_flag,
+    );
+
+    modport forward_pins(
+
+        // hazard_logic --> forward_unit
+        input logic [2:0] id_rs1_dependency, 
+        input logic [2:0] id_rs2_dependency,
+        input logic [1:0] ex_rs1_dependency, 
+        input logic [1:0] ex_rs2_dependency,
+    
+        // forward_unit <--> data_path
+        input logic       mem_load_en,
+        output logic [1:0] id_rs1_mux_sel,
+        output logic [1:0] id_rs2_mux_sel,
+        output logic [2:0] ex_alu_a_mux_sel,
+        output logic [2:0] ex_alu_b_mux_sel
+    );
+
+    modport hazard_pins(
+
+        // hazard_unit <-- control_unit
+        input logic [4:0] id_rs1, 
+        input logic [4:0] id_rs2, 
+        input logic id_b_inst_en , 
+        
+        // hazard_unit <-- data_path
+        input logic [4:0] ex_rs1, 
+        input logic [4:0] ex_rs2, 
+        input logic [4:0] ex_rd_add,
+        input logic ex_branch_taken , 
+        input logic       mem_load_en, 
+        input logic [4:0] mem_rd_add,
+        input logic [4:0] wb_rd_add,
+    
+        // hazard_unit --> forwarding_unit
+        output logic stall_if, 
+        output logic stall_id, 
+        output logic stall_ex,
+        output logic nop_id, 
+        output logic nop_ex
+    
+        //hazard_unit --> forwarding_unit
+        output logic [2:0] id_rs1_dependency, 
+        output logic [2:0] id_rs2_dependency,
+        output logic [1:0] ex_rs1_dependency, 
+        output logic [1:0] ex_rs2_dependency
+
+    );
+
+
+
+
+endinterface //core_if

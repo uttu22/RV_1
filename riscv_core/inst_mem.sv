@@ -1,17 +1,20 @@
 module inst_mem #(
-    parameter DATA_WIDTH  = 32 ,
-    parameter ADDRESS_WIDTH = 10,
+    parameter WORD_WIDTH  = 32 ,
+    parameter MEMORY_WIDTH = 10
 )(
-    input logic clk ,
-    input logic [ADDRESS_WIDTH-1:0] inst_add ,
-    input logic [DATA_WIDTH - 1 :0] read_data ,
-    output logic[DATA_WIDTH -1 : 0] data_out  
- )
+    input logic   clk ,
+    input logic   read_en,
+    input logic  [WORD_WIDTH-1:0] inst_add ,
+    output logic [WORD_WIDTH -1 : 0] data_out  
+ );
 
-logic [DATA_WIDTH-1:0] ROM [0:(1<<ADDRESS_WIDTH)-1];
+logic [WORD_WIDTH-1:0] ROM [0:((1<<(MEMORY_WIDTH-2))-1)];
+logic [MEMORY_WIDTH-3:0] word_address ;
+
+assign word_address = inst_add[MEMORY_WIDTH-1:2];
 
 always_ff @(posedge clk ) begin : inst_memory
-    data_out <= ROM[inst_add];
+    if(read_en == 1'b1)data_out <= ROM[word_address];
 end
 
 endmodule
