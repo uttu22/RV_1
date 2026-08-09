@@ -14,27 +14,21 @@ import rv32i_pkg::* ;
 
 
 
-
-
-
-
 always_comb begin
     take_branch = 1'b0;
-    if(branch_enable) begin
-        if(jump_enable) begin
-            take_branch = 1'b1;
-        end
-        else begin
-            case(fun3)
-                F3_BEQ   : take_branch = ((id_rs1==id_rs2)   ? 1'b1 : 1'b0) ;
-                F3_BNE   : take_branch = ((id_rs1!=id_rs2)   ? 1'b1 : 1'b0) ;
-                F3_BLT   : take_branch = ((id_rs1<id_rs2)   ? 1'b1 : 1'b0) ;
-                F3_BGE   : take_branch = ((id_rs1>=id_rs2)   ? 1'b1 : 1'b0) ;
-                F3_BLTU  : take_branch = (($unsigned(id_rs1)<$unsigned(id_rs2))  ? 1'b1 : 1'b0) ;
-                F3_BGEU : take_branch = (($unsigned(id_rs1)>=$unsigned(id_rs2)) ? 1'b1 : 1'b0) ;
-                default : take_branch = 1'b0; 
-            endcase
-        end
+    if(jump_enable) begin
+        take_branch = 1'b1;
+    end
+    else if(branch_enable) begin
+        case(fun3)
+            F3_BEQ   : take_branch = ((id_rs1==id_rs2)   ? 1'b1 : 1'b0) ;
+            F3_BNE   : take_branch = ((id_rs1!=id_rs2)   ? 1'b1 : 1'b0) ;
+            F3_BLT   : take_branch = ((id_rs1<id_rs2)   ? 1'b1 : 1'b0) ;
+            F3_BGE   : take_branch = ((id_rs1>=id_rs2)   ? 1'b1 : 1'b0) ;
+            F3_BLTU  : take_branch = (($unsigned(id_rs1)<$unsigned(id_rs2))  ? 1'b1 : 1'b0) ;
+            F3_BGEU : take_branch = (($unsigned(id_rs1)>=$unsigned(id_rs2)) ? 1'b1 : 1'b0) ;
+            default : take_branch = 1'b0; 
+        endcase
     end
 end
 

@@ -1,5 +1,4 @@
 module reg_bank #(parameter WIDTH = 32 )(
-    input logic            we,
     input logic            clk,
     input logic            _reset,
     input logic[WIDTH-1:0] rd_in,
@@ -20,7 +19,7 @@ module reg_bank #(parameter WIDTH = 32 )(
                 REG[i]<= 'b0 ;
             end
         end
-        else if (we && (rd_sel != 5'b0) ) begin
+        else if (rd_sel != 5'b0) begin
             REG[rd_sel] <= rd_in ;
         end 
     end

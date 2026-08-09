@@ -7,6 +7,7 @@ package rv32i_pkg;
         OP_U_LUI    = 7'b0110111,
         OP_U_AUIPC  = 7'b0010111,
         OP_J_JAL    = 7'b1101111,
+        OP_I_CSR    = 7'b1110011,
         OP_I_JALR   = 7'b1100111,
         OP_I_LOAD   = 7'b0000011,
         OP_I_ARITH_SHIFT  = 7'b0010011,
@@ -20,6 +21,15 @@ package rv32i_pkg;
     typedef enum logic[2:0] { 
         F3_JALR = 3'b000
     } fun3_i_jalr;
+
+    typedef enum logic[2:0] {
+        F3_CSRRW = 3'b001,
+        F3_CSRRS = 3'b010,
+        F3_CSRRC = 3'b011,
+        F3_CSRRWI = 3'b101,
+        F3_CSRRSI = 3'b110,
+        F3_CSRRCI = 3'b111,
+    }fun3_i_csr;
 
     typedef enum logic[2:0] { 
         F3_LB = 3'b000,
@@ -102,7 +112,6 @@ package rv32i_pkg;
     typedef struct packed {
         logic [WIDTH-1:0] ex_data;
         logic [4:0] rd_add;
-        logic [2:0] fun3;
         logic       load_en;
     }ex_mem_t;
 

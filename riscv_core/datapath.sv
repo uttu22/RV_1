@@ -43,10 +43,10 @@ module datapath
     output logic [4:0] ex_rs2_add,
     output logic [4:0] ex_rd_add,
     output logic [4:0] mem_rd_add,
-    output logic [4:0] wb_rd_add
+    output logic [4:0] wb_rd_add,
     output logic [3:0] ex_alu_flag,
-    output logic mem_load_en ;
-    output logic ex_branch_taken;
+    output logic mem_load_en ,
+    output logic ex_branch_taken
 
 ); 
 
@@ -102,10 +102,8 @@ logic [WIDTH-1:0] id_reg_bank_rs2;
 logic [WIDTH-1:0] id_rs1;
 logic [WIDTH-1:0] id_rs2;
 logic [WIDTH-1:0] id_imm;
-logic reg_we = (mem_wb_reg.rd_add != 5'b0 );
 //REG BANK 
 reg_bank u_id_reg_bank(
-    .we(reg_we),
     .clk(clk),
     ._reset(_reset),
     .rd_in(mem_wb_reg.mem_data),  //<<-- unsolved
@@ -119,20 +117,20 @@ reg_bank u_id_reg_bank(
 
 //IMM GENERATOR
 imm_gen u_id_imm_gen(
-    .inst(if_id_reg.inst),
+    .opcode(if_id_reg.inst[6:0]),
     .imm(id_imm)
 );
 
 
 always_comb begin
-    case(id_rs1_mux_sel)
+    case(id_rs1_mux_sel) // signal coming from forward block 
         'b00 : id_rs1 = id_reg_bank_rs1 ;
         'b01 : id_rs1 = ex_mem_reg.ex_data ;
         'b10 : id_rs1 = mem_wb_reg.mem_data ;
         'b11 : id_rs1 = 'b0 ;
     endcase
     
-    case(id_rs2_mux_sel)
+    case(id_rs2_mux_sel) //signal coming from forward block 
         'b00 : id_rs2 = id_reg_bank_rs2 ;
         'b01 : id_rs2 = ex_mem_reg.ex_data ;
         'b10 : id_rs2 = mem_wb_reg.mem_data ;
@@ -143,11 +141,11 @@ end
 
 //BRANCH COMPARATOR / LOGIC 
 branch_logic u_id_branch_logic(
-    .branch_enable(id_b_inst_en),
-    .jump_enable(id_jump_en),
-    .id_rs1(id_rs1),
-    .id_rs2(id_rs2),
-    .fun3(id_fun3),
+    .branch_enable(id_b_inst_en),  //CB signal
+    .jump_enable(id_jump_en),      //CB singal
+    .id_rs1(id_rs1),               
+    .id_rs2(id_rs2),              
+    .fun3(id_fun3),                 //CB signal 
     .take_branch(id_ex_next.branch_taken)
 );
 
@@ -181,7 +179,6 @@ branch_logic u_id_branch_logic(
 
 
 
-assign ex_mem_next.fun3 = id_ex_reg.fun3 ;
 assign ex_mem_next.rd_add = id_ex_reg.rd_add ;
 assign ex_mem_next.load_en = id_ex_reg.load_en ;
 
@@ -237,7 +234,6 @@ assign mem_rd_add = ex_mem_reg.rd_add;
 
 
 data_mem #(
-    .WORD_WIDTH(32),
     .MEMORY_WIDTH(10)
 )
 u_data_mem(
@@ -245,7 +241,7 @@ u_data_mem(
     .we(id_ex_reg.store_en),
     .re(id_ex_reg.load_en),
     ._reset(_reset),
-    .byte_mask(), //<-- still nedd to fix
+    .fun_3(id_ex_reg.fun3), //<-- still nedd to fix
     .data_in(ex_store_data),
     .data_address(id_ex_reg.address_data),
     .data_out(mem_load_data)
@@ -295,6 +291,11 @@ assign ex_rd_add = id_ex_reg.rd_add;
 assign mem_rd_add = ex_mem_reg.rd_add;
 //--------------
 assign wb_rd_add = mem_wb_reg.rd_add;
+
+
+
+
+
 
 
 

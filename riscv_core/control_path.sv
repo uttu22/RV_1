@@ -75,6 +75,12 @@ always_comb begin
             id_rd_add = inst_rd_add;
             end
 
+        // OP_I_CSR : begin
+        //     id_imm_en = 'b1;
+        //     id_fun3 = inst_fun3;
+        //     id_rd_add = inst_rd_add;
+        // end
+
         OP_I_JALR :  begin
             id_imm_en = 'b1;
             id_jump_en = 'b1;

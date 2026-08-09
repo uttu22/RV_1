@@ -77,13 +77,24 @@
 | FENCE | Synchronize Threads | fm | pred | succ | 0 | 000 | 0 | 0001111 |
 | FENCE.TSO | Total Store Order | 1000 | 1111 | 1111 | 0 | 000 | 0 | 0001111 |
 
----
+## Zicsr Extension Instructions (Control and Status Register)
+| Instruction | Description | csr | rs1/uimm | funct3 | rd | Opcode |
+|---|---|---|---|---|---|---|
+| CSRRW | CSR Read and Write | csr[11:0] | rs1 | 001 | rd | 1110011 |
+| CSRRS | CSR Read and Set Bits | csr[11:0] | rs1 | 010 | rd | 1110011 |
+| CSRRC | CSR Read and Clear Bits | csr[11:0] | rs1 | 011 | rd | 1110011 |
+| CSRRWI | CSR Read and Write Immediate | csr[11:0] | uimm | 101 | rd | 1110011 |
+| CSRRSI | CSR Read and Set Bits Immediate | csr[11:0] | uimm | 110 | rd | 1110011 |
+| CSRRCI | CSR Read and Clear Bits Immediate | csr[11:0] | uimm | 111 | rd | 1110011 |
+
 
 ### Bit Field Legend
 - **imm**: Immediate value (various bit ranges)
+- **uimm**: Unsigned immediate value (5 bits)
 - **rd**: Destination register
 - **rs1**: Source register 1
 - **rs2**: Source register 2
+- **csr**: Control and Status Register address (12 bits)
 - **funct3**: 3-bit function code (differentiates instructions within same opcode)
 - **funct7**: 7-bit function code (used in R-type instructions)
 - **shamt**: Shift amount (5 bits)
